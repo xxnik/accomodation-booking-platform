@@ -89,11 +89,16 @@ const sessionOptions = {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production
   },
 };
 
 if (store) {
   sessionOptions.store = store;
+} else if (process.env.NODE_ENV === "production") {
+  console.warn(
+    "WARNING: Running in production without session store. Sessions will be lost on server restart.",
+  );
 }
 
 app.use(session(sessionOptions));

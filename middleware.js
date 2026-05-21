@@ -31,6 +31,22 @@ module.exports.saveRedirectUrl = (req, res, next) => {
 module.exports.isOwner = async (req, res, next) => {
   let { id } = req.params;
   const listing = await Listing.findById(id);
+
+  if (!listing) {
+    req.flash("error", "Listing not found");
+    return res.redirect("/listings");
+  }
+
+  if (!listing.owner) {
+    req.flash("error", "Listing owner information is missing");
+    return res.redirect(`/listings/${id}`);
+  }
+
+  if (!res.locals.currUser) {
+    req.flash("error", "You must be logged in");
+    return res.redirect("/login");
+  }
+
   if (!listing.owner._id.equals(res.locals.currUser._id)) {
     req.flash("error", " you are not the owner of this property");
     return res.redirect(`/listings/${id}`);
@@ -67,14 +83,22 @@ module.exports.validateReview = (req, res, next) => {
 module.exports.isReviewAuthor = async (req, res, next) => {
   let { id, reviewId } = req.params;
   const review = await Review.findById(reviewId);
+
   if (!review) {
     req.flash("error", "review not found");
     return res.redirect(`/listings/${id}`);
   }
+
   if (!review.author) {
     req.flash("error", "review author is missing");
     return res.redirect(`/listings/${id}`);
   }
+
+  if (!res.locals.currUser) {
+    req.flash("error", "You must be logged in");
+    return res.redirect("/login");
+  }
+
   if (!review.author.equals(res.locals.currUser._id)) {
     req.flash("error", " you are not author");
     return res.redirect(`/listings/${id}`);
