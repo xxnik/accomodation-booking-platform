@@ -1,18 +1,23 @@
 {
-  "engines": {
-    "node": "24.13.1"
-  },
   "name": "big_project",
   "version": "1.0.0",
-  "description": "",
+  "description": "this a an fullstack accomodation booking platform",
+  "keywords": [],
+  "homepage": "https://github.com/xxnik/accomodation-booking-platform#readme",
+  "bugs": {
+    "url": "https://github.com/xxnik/accomodation-booking-platform/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xxnik/accomodation-booking-platform.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "bootstrap": "^5.3.8",
     "cloudinary": "^1.41.3",
@@ -33,5 +38,9 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^9.1.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "24.13.1"
   }
 }
