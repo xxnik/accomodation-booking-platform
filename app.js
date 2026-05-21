@@ -51,6 +51,20 @@ main()
     console.log(err);
   });
 
+// Validate required environment variables
+if (process.env.NODE_ENV === "production") {
+  if (!process.env.SECRET) {
+    console.error(
+      "CRITICAL: Missing SECRET environment variable in production!",
+    );
+  }
+  if (!process.env.ATLASDB_URL) {
+    console.error(
+      "CRITICAL: Missing ATLASDB_URL environment variable in production!",
+    );
+  }
+}
+
 let store;
 if (process.env.NODE_ENV === "production") {
   store = MongoStore.create({
@@ -67,7 +81,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const sessionOptions = {
-  secret: process.env.SECRET,
+  secret: process.env.SECRET || "default-secret-key",
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -93,12 +107,19 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-  const successMessages = req.flash("success");
-  const errorMessages = req.flash("error");
+  try {
+    const successMessages = req.flash("success") || [];
+    const errorMessages = req.flash("error") || [];
 
-  res.locals.success = Array.isArray(successMessages) ? successMessages : [];
-  res.locals.error = Array.isArray(errorMessages) ? errorMessages : [];
-  res.locals.currUser = req.user;
+    res.locals.success = Array.isArray(successMessages) ? successMessages : [];
+    res.locals.error = Array.isArray(errorMessages) ? errorMessages : [];
+    res.locals.currUser = req.user || null;
+  } catch (err) {
+    console.error("Error in flash middleware:", err);
+    res.locals.success = [];
+    res.locals.error = [];
+    res.locals.currUser = null;
+  }
   next();
 });
 
