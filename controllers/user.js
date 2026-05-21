@@ -18,7 +18,12 @@ module.exports.signup=async (req, res, next) => {
       }
       req.flash("success", "welcome to wanderlust!");
       let redirectUrl = res.locals.redirectUrl || "/listings";
-      res.redirect(redirectUrl);
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          return next(saveErr);
+        }
+        res.redirect(redirectUrl);
+      });
       
     });
   } catch (e) {
@@ -31,10 +36,15 @@ module.exports.renderLoginForm= (req, res) => {
   res.render("listings/users/login.ejs");
 }
 
-module.exports.login=async (req, res) => {
+module.exports.login=async (req, res, next) => {
     req.flash("success", "welcome to wonderlust");
-     let redirectUrl = res.locals.redirectUrl || "/listings";
-    res.redirect(redirectUrl);
+    let redirectUrl = res.locals.redirectUrl || "/listings";
+    req.session.save((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect(redirectUrl);
+    });
 }
 
 module.exports.logOut= (req, res, next) => {
