@@ -108,8 +108,11 @@
 
 
     app.use((req,res,next)=>{
-        res.locals.success=req.flash("success");
-        res.locals.error=req.flash("error");
+        const successMessages = req.flash("success");
+        const errorMessages = req.flash("error");
+
+        res.locals.success = Array.isArray(successMessages) ? successMessages : [];
+        res.locals.error = Array.isArray(errorMessages) ? errorMessages : [];
         res.locals.currUser=req.user;
         next();
     });
