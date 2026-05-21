@@ -43,9 +43,11 @@ async function main() {
   await mongoose.connect(dbUrl);
 }
 
+
 main()
   .then(() => {
     console.log("connected to db");
+    console.log(process.env.SECRET);
   })
   .catch((err) => {
     console.log(err);
@@ -66,7 +68,15 @@ if (process.env.NODE_ENV === "production") {
 }
 
 let store;
+// Before this block, add a guard:
 if (process.env.NODE_ENV === "production") {
+  if (!dbUrl) {
+    throw new Error("ATLASDB_URL is not set. Cannot start server.");
+  }
+  if (!process.env.SECRET) {
+    throw new Error("SECRET is not set. Cannot start server.");
+  }
+
   store = MongoStore.create({
     mongoUrl: dbUrl,
     crypto: {
@@ -74,6 +84,8 @@ if (process.env.NODE_ENV === "production") {
     },
     touchAfter: 24 * 3600,
   });
+  // ...
+
 
   store.on("error", (err) => {
     console.log("ERROR in mongo session", err);
