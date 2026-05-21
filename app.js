@@ -10,7 +10,6 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const Review = require("./models/review.js");
-const LocalStrategy = require("passport-local");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const MongoStore = require("connect-mongo");
